@@ -1,10 +1,7 @@
 <?php
 require_once '../config.php';
 
-// Check if user is admin
-if (!isAdmin()) {
-    redirect('../index.php');
-}
+requireAdmin();
 
 // Get statistics
 $stats = [];
@@ -17,23 +14,45 @@ $stats['hikes'] = $stmt->fetch()['count'];
 $stmt = $pdo->query("SELECT COUNT(*) as count FROM bookings");
 $stats['bookings'] = $stmt->fetch()['count'];
 
+// Pending requests (bookings awaiting approval)
+$stmt = $pdo->query("SELECT COUNT(*) as count FROM bookings WHERE status = 'pending'");
+$stats['pending_requests'] = $stmt->fetch()['count'];
+
 // Total users
-$stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE role = 'user'");
+$stmt = $pdo->query("SELECT COUNT(*) as count FROM users WHERE role = 'user' AND is_active = 1");
 $stats['users'] = $stmt->fetch()['count'];
 
 // Total revenue
 $stmt = $pdo->query("SELECT SUM(total_price) as total FROM bookings WHERE status != 'cancelled'");
 $stats['revenue'] = $stmt->fetch()['total'] ?? 0;
 
-// Recent bookings
-$stmt = $pdo->query("
-    SELECT b.*, h.name as hike_name 
-    FROM bookings b 
-    JOIN hikes h ON b.hike_id = h.id 
-    ORDER BY b.created_at DESC 
-    LIMIT 10
-");
-$recent_bookings = $stmt->fetchAll();
+// Recent booking requests (reflected from user submissions)
+$recent_bookings = [];
+try {
+    $stmt = $pdo->query("
+        SELECT b.*, h.name as hike_name, u.username as requested_by
+        FROM bookings b
+        JOIN hikes h ON b.hike_id = h.id
+        LEFT JOIN users u ON b.user_id = u.id
+        ORDER BY b.created_at DESC
+        LIMIT 10
+    ");
+    $recent_bookings = $stmt->fetchAll();
+} catch (PDOException $e) {
+    if (strpos($e->getMessage(), 'user_id') !== false) {
+        $stmt = $pdo->query("
+            SELECT b.*, h.name as hike_name
+            FROM bookings b
+            JOIN hikes h ON b.hike_id = h.id
+            ORDER BY b.created_at DESC
+            LIMIT 10
+        ");
+        $recent_bookings = $stmt->fetchAll();
+        foreach ($recent_bookings as &$row) { $row['requested_by'] = null; }
+    } else {
+        throw $e;
+    }
+}
 
 // Handle status update
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
@@ -64,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </a>
             <ul class="nav-links">
                 <li><a href="../index.php">Home</a></li>
-                <li><a href="../hikes.php">Hikes</a></li>
+                <li><a href="../hikes.php">Explore</a></li>
                 <li><a href="../profile.php">Profile</a></li>
                 <li><a href="dashboard.php">Admin</a></li>
                 <li><a href="../logout.php">Logout</a></li>
@@ -88,6 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 <h3><?php echo $stats['bookings']; ?></h3>
                 <p>Total Bookings</p>
             </div>
+            <div class="stat-card" style="<?php echo $stats['pending_requests'] > 0 ? 'border: 2px solid #ff9800; background: #fff8e1;' : ''; ?>">
+                <h3><?php echo $stats['pending_requests']; ?></h3>
+                <p>Pending Requests</p>
+                <?php if ($stats['pending_requests'] > 0): ?>
+                    <a href="manage_bookings.php?status=pending" style="font-size: 0.9rem; margin-top: 0.5rem; display: inline-block;">View & approve →</a>
+                <?php endif; ?>
+            </div>
             <div class="stat-card">
                 <h3><?php echo $stats['users']; ?></h3>
                 <p>Registered Users</p>
@@ -98,17 +124,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </div>
         </div>
 
-        <!-- Recent Bookings -->
+        <!-- Recent Booking Requests (reflected from user submissions) -->
         <div class="table-container">
             <div style="padding: 1.5rem; background: var(--primary); color: white;">
-                <h3 style="margin: 0;">Recent Bookings</h3>
+                <h3 style="margin: 0;">Recent Booking Requests</h3>
+                <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">New requests from users appear here</p>
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Hike</th>
-                        <th>Customer</th>
+                        <th>Customer / Requested by</th>
                         <th>Date</th>
                         <th>Guests</th>
                         <th>Price</th>
@@ -124,6 +151,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                             <td>
                                 <?php echo sanitize($booking['customer_name']); ?><br>
                                 <small style="color: var(--text-light);"><?php echo sanitize($booking['customer_email']); ?></small>
+                                <?php if (!empty($booking['requested_by'])): ?>
+                                    <br><small style="color: var(--primary);">User: <?php echo sanitize($booking['requested_by']); ?></small>
+                                <?php endif; ?>
                             </td>
                             <td><?php echo date('M d, Y', strtotime($booking['date'])); ?></td>
                             <td><?php echo $booking['guests']; ?></td>
@@ -156,9 +186,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </table>
         </div>
 
-        <div style="margin-top: 2rem; text-align: center;">
-            <a href="manage_hikes.php" class="btn btn-primary">Manage Hikes</a>
-            <a href="manage_bookings.php" class="btn btn-secondary">Manage All Bookings</a>
+        <div style="margin-top: 2rem; text-align: center; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+            <a href="manage_bookings.php" class="btn btn-primary">Manage All Bookings</a>
+            <a href="manage_hikes.php" class="btn btn-secondary">Manage Hikes</a>
+            <a href="manage_users.php" class="btn btn-secondary">Manage Users (RBAC)</a>
         </div>
     </div>
 

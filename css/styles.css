@@ -311,6 +311,50 @@ body {
     border-color: var(--primary);
 }
 
+/* Password visibility toggle (eye icon) */
+.input-password-wrap {
+    position: relative;
+}
+.input-password-wrap .form-control {
+    padding-right: 2.75rem;
+}
+.password-toggle-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0.35rem;
+    cursor: pointer;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+.password-toggle-btn:hover {
+    color: var(--primary);
+}
+.password-toggle-btn svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    display: block;
+}
+.password-toggle-btn .icon-show {
+    display: block;
+}
+.password-toggle-btn .icon-hide {
+    display: none;
+}
+.password-toggle-btn.showing .icon-show {
+    display: none;
+}
+.password-toggle-btn.showing .icon-hide {
+    display: block;
+}
+
 /* Alerts */
 .alert {
     padding: 1rem;
@@ -472,7 +516,512 @@ table tr:hover {
     background: var(--bg-light);
 }
 
-/* Responsive */
+/* ========== Home page (AllTrails-style) ========== */
+.home-page .navbar-home,
+.explore-page .navbar-home {
+    background: transparent;
+    box-shadow: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.home-page .navbar-home .nav-links a:hover,
+.explore-page .navbar-home .nav-links a:hover {
+    color: var(--accent);
+}
+
+/* Explore page hero (shorter, same bg as home for transparent nav) */
+.hero-explore {
+    min-height: 32vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url('../images/mountain.jpg') center/cover no-repeat;
+    background-attachment: fixed;
+}
+
+.hero-explore .hero-inner {
+    text-align: center;
+}
+
+.hero-explore .hero-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.hero-home {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1.5rem 4rem;
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), url('../images/mountain.jpg') center/cover no-repeat;
+    background-attachment: fixed;
+}
+
+.hero-inner {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    opacity: 0.95;
+    margin-bottom: 2rem;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-search {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 520px;
+    margin: 0 auto 1.25rem;
+    background: var(--white);
+    border-radius: 50px;
+    padding: 0.35rem 0.35rem 0.35rem 1.25rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+.hero-search-input {
+    flex: 1;
+    border: none;
+    padding: 0.85rem 0;
+    font-size: 1rem;
+    outline: none;
+    min-width: 0;
+}
+
+.hero-search-input::placeholder {
+    color: var(--text-light);
+}
+
+.btn-hero {
+    padding: 0.85rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hero-link {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+.hero-link:hover {
+    text-decoration: underline;
+    color: var(--white);
+}
+
+/* Stats bar */
+.home-stats {
+    background: var(--white);
+    padding: 3rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.stat-item {
+    padding: 0 1rem;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+}
+
+.stat-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Home sections */
+.home-section {
+    padding: 4rem 0;
+}
+
+.home-section:nth-child(even) {
+    background: var(--bg-light);
+}
+
+.home-hikes-grid {
+    margin-top: 2rem;
+}
+
+.hike-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.hike-card-link:hover .hike-title {
+    color: var(--primary-light);
+}
+
+.hike-card-link .hike-cta {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.meta-duration {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.section-cta {
+    text-align: center;
+    margin-top: 2.5rem;
+}
+
+/* Browse by difficulty */
+.browse-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.browse-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    padding: 1.5rem;
+    background: var(--white);
+    border: 2px solid #e8e8e8;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.browse-card:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: #f0f7ec;
+}
+
+.browse-card-label {
+    text-align: center;
+}
+
+.features-compact .feature-card {
+    padding: 1.5rem 1.25rem;
+}
+
+.features-compact .feature-icon {
+    font-size: 2.25rem;
+}
+
+.features-compact .feature-card h3 {
+    font-size: 1.1rem;
+}
+
+.features-compact .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* Responsive - home */
+@media (max-width: 768px) {
+    .hero-home {
+        min-height: 75vh;
+        padding: 5rem 1rem 3rem;
+    }
+    .hero-search {
+        flex-direction: column;
+        border-radius: 16px;
+        padding: 0.5rem;
+    }
+    .hero-search-input {
+        padding: 0.9rem 1rem;
+    }
+    .btn-hero {
+        width: 100%;
+    }
+    .stats-row {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .browse-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Auth Modals */
+.auth-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.auth-modal-overlay.is-open {
+    display: flex;
+    opacity: 1;
+}
+.auth-modal {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    max-width: 420px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2rem;
+    animation: authModalIn 0.25s ease;
+}
+@keyframes authModalIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.auth-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+.auth-modal-close:hover {
+    color: var(--text-dark);
+}
+.auth-modal-title {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+.auth-form .form-group {
+    margin-bottom: 1.25rem;
+}
+.btn-block {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+.auth-modal-switch {
+    text-align: center;
+    margin-top: 1.25rem;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+.auth-modal-switch a {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+}
+.auth-modal-switch a:hover {
+    text-decoration: underline;
+}
+
+/* Hike detail modal */
+.hike-detail-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 9998;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.hike-detail-modal-overlay.is-open {
+    display: flex;
+    opacity: 1;
+}
+.hike-detail-modal {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    max-width: 560px;
+    width: 100%;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: authModalIn 0.25s ease;
+}
+.hike-detail-modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 2;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--text-dark);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.hike-detail-modal-close:hover {
+    background: var(--white);
+}
+.hike-detail-modal-content {
+    overflow-y: auto;
+    flex: 1;
+}
+.hike-detail-modal-loading,
+.hike-detail-modal-error {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-light);
+}
+.hike-detail-modal-error {
+    color: #721c24;
+}
+.hike-detail-modal-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+.hike-detail-modal-body {
+    padding: 1.5rem 2rem 2rem;
+}
+.hike-detail-modal-title {
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+.hike-detail-modal-location {
+    color: var(--text-light);
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+}
+.hike-detail-modal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.hike-detail-modal-item {
+    padding: 0.75rem;
+    background: var(--bg-light);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+.hike-detail-modal-item strong {
+    display: block;
+    color: var(--primary);
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+}
+.hike-detail-modal-about {
+    margin-bottom: 1.5rem;
+}
+.hike-detail-modal-about h3 {
+    color: var(--primary);
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+.hike-detail-modal-about p {
+    line-height: 1.7;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    margin: 0;
+}
+.hike-detail-modal-actions {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--bg-light);
+    border-radius: 12px;
+}
+.hike-detail-modal-actions h3 {
+    color: var(--primary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+.hike-detail-modal-auth-p {
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+}
+.hike-detail-book-btn {
+    display: inline-block;
+}
+/* Make secondary button visible on light modal background */
+.hike-detail-modal-actions .btn-secondary {
+    background: var(--white);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+}
+.hike-detail-modal-actions .btn-secondary:hover {
+    background: var(--bg-light);
+    color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+@media (max-width: 600px) {
+    .hike-detail-modal-grid {
+        grid-template-columns: 1fr;
+    }
+    .hike-detail-modal-body {
+        padding: 1.25rem;
+    }
+}
+
 @media (max-width: 768px) {
     .hero h1 {
         font-size: 2rem;
@@ -499,5 +1048,15 @@ table tr:hover {
     .logo img {
         height: 28px;
         padding: 3px;
+    }
+    
+    .home-page .navbar-home,
+    .explore-page .navbar-home {
+        position: relative;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    }
+    .hero-explore {
+        min-height: 28vh;
+        padding: 5rem 1rem 2.5rem;
     }
 }

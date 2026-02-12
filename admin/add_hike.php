@@ -1,10 +1,7 @@
 <?php
 require_once '../config.php';
 
-// Check if user is admin
-if (!isAdmin()) {
-    redirect('../index.php');
-}
+requireAdmin();
 
 $error = '';
 $success = false;
@@ -59,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
             <ul class="nav-links">
                 <li><a href="../index.php">Home</a></li>
-                <li><a href="../hikes.php">Hikes</a></li>
+                <li><a href="../hikes.php">Explore</a></li>
                 <li><a href="../profile.php">Profile</a></li>
                 <li><a href="dashboard.php">Admin</a></li>
                 <li><a href="../logout.php">Logout</a></li>

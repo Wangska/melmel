@@ -1,19 +1,46 @@
 <?php
 require_once '../config.php';
 
-// Check if user is admin
-if (!isAdmin()) {
-    redirect('../index.php');
-}
+requireAdmin();
 
-// Get all bookings
-$stmt = $pdo->query("
-    SELECT b.*, h.name as hike_name, h.location 
-    FROM bookings b 
-    JOIN hikes h ON b.hike_id = h.id 
-    ORDER BY b.created_at DESC
-");
-$bookings = $stmt->fetchAll();
+// Optional filter by status (e.g. ?status=pending)
+$status_filter = isset($_GET['status']) && in_array($_GET['status'], ['pending', 'confirmed', 'cancelled']) ? $_GET['status'] : null;
+
+$params = [];
+if ($status_filter) {
+    $params[] = $status_filter;
+}
+$bookings = [];
+try {
+    $query = "
+        SELECT b.*, h.name as hike_name, h.location, u.username as requested_by
+        FROM bookings b
+        JOIN hikes h ON b.hike_id = h.id
+        LEFT JOIN users u ON b.user_id = u.id
+        WHERE 1=1
+    ";
+    if ($status_filter) {
+        $query .= " AND b.status = ?";
+    }
+    $query .= " ORDER BY b.created_at DESC";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    $bookings = $stmt->fetchAll();
+} catch (PDOException $e) {
+    if (strpos($e->getMessage(), 'user_id') !== false) {
+        $query = "SELECT b.*, h.name as hike_name, h.location FROM bookings b JOIN hikes h ON b.hike_id = h.id WHERE 1=1";
+        if ($status_filter) {
+            $query .= " AND b.status = ?";
+        }
+        $query .= " ORDER BY b.created_at DESC";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
+        $bookings = $stmt->fetchAll();
+        foreach ($bookings as &$row) { $row['requested_by'] = null; }
+    } else {
+        throw $e;
+    }
+}
 
 // Handle delete
 if (isset($_GET['delete'])) {
@@ -52,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </a>
             <ul class="nav-links">
                 <li><a href="../index.php">Home</a></li>
-                <li><a href="../hikes.php">Hikes</a></li>
+                <li><a href="../hikes.php">Explore</a></li>
                 <li><a href="../profile.php">Profile</a></li>
                 <li><a href="dashboard.php">Admin</a></li>
                 <li><a href="../logout.php">Logout</a></li>
@@ -96,6 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                             <td>
                                 <?php echo sanitize($booking['customer_name']); ?><br>
                                 <small style="color: var(--text-light);"><?php echo sanitize($booking['customer_email']); ?></small>
+                                <?php if (!empty($booking['requested_by'])): ?>
+                                    <br><small style="color: var(--primary);">User: <?php echo sanitize($booking['requested_by']); ?></small>
+                                <?php endif; ?>
                             </td>
                             <td><?php echo date('M d, Y', strtotime($booking['date'])); ?></td>
                             <td><?php echo $booking['guests']; ?></td>

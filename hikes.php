@@ -35,9 +35,9 @@ $hikes = $stmt->fetchAll();
     <title>All Hikes - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
+<body class="explore-page">
+    <!-- Navigation (transparent over hero, same as home) -->
+    <nav class="navbar navbar-home">
         <div class="nav-container">
             <a href="index.php" class="logo">
                 <img src="images/logo.png" alt="HikeBook Cebu Logo">
@@ -45,25 +45,33 @@ $hikes = $stmt->fetchAll();
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
+                <li><a href="hikes.php">Explore</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="profile.php">Profile</a></li>
                     <?php if (isAdmin()): ?>
-                        <li><a href="admin/dashboard.php">Admin</a></li>
+                        <li><a href="<?php echo base_url('admin/dashboard.php'); ?>">Admin</a></li>
                     <?php endif; ?>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
-                    <li><a href="login.php">Login</a></li>
-                    <li><a href="register.php">Register</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="login">Log in</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="register">Sign up</a></li>
                 <?php endif; ?>
             </ul>
         </div>
     </nav>
 
+    <!-- Hero (same style as home so nav is transparent) -->
+    <section class="hero hero-explore">
+        <div class="hero-inner">
+            <h1 class="hero-title">Explore trails</h1>
+            <p class="hero-subtitle">Discover <?php echo count($hikes); ?> amazing trails in Cebu</p>
+        </div>
+    </section>
+
     <div class="container">
         <div class="section-title">
             <h2>All Hiking Trails</h2>
-            <p>Discover <?php echo count($hikes); ?> amazing trails in Cebu</p>
+            <p>Find the right trail for your day</p>
         </div>
 
         <!-- Filters -->
@@ -111,7 +119,7 @@ $hikes = $stmt->fetchAll();
                             </p>
                             <div class="hike-footer">
                                 <span class="price">₱<?php echo number_format($hike['price']); ?></span>
-                                <a href="hike_details.php?id=<?php echo $hike['id']; ?>" class="btn btn-primary">View Details</a>
+                                <a href="#" class="btn btn-primary hike-detail-trigger" data-hike-id="<?php echo $hike['id']; ?>">View Details</a>
                             </div>
                         </div>
                     </div>
@@ -129,6 +137,8 @@ $hikes = $stmt->fetchAll();
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
     </footer>
+    <?php require_once 'includes/hike_detail_modal.php'; ?>
+    <?php if (!isLoggedIn()): require_once 'includes/auth_modals.php'; endif; ?>
 
     <script>
         // Auto-filter functionality

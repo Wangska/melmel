@@ -48,13 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Calculate total price
         $total_price = $hike['price'] * $guests;
         
-        // Insert booking
+        // Insert booking (user_id links request to user for admin panel)
+        $user_id = isLoggedIn() ? $_SESSION['user_id'] : null;
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO bookings (hike_id, customer_name, customer_email, date, guests, total_price, status) 
-                VALUES (?, ?, ?, ?, ?, ?, 'pending')
+                INSERT INTO bookings (hike_id, user_id, customer_name, customer_email, date, guests, total_price, status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
             ");
-            $stmt->execute([$hike_id, $customer_name, $customer_email, $date, $guests, $total_price]);
+            $stmt->execute([$hike_id, $user_id, $customer_name, $customer_email, $date, $guests, $total_price]);
             $success = true;
         } catch (PDOException $e) {
             $error = 'Booking failed. Please try again.';
@@ -80,10 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
+                <li><a href="hikes.php">Explore</a></li>
                 <li><a href="profile.php">Profile</a></li>
                 <?php if (isAdmin()): ?>
-                    <li><a href="admin/dashboard.php">Admin</a></li>
+                    <li><a href="<?php echo base_url('admin/dashboard.php'); ?>">Admin</a></li>
                 <?php endif; ?>
                 <li><a href="logout.php">Logout</a></li>
             </ul>

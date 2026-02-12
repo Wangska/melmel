@@ -40,10 +40,10 @@ $bookings = $stmt->fetchAll();
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
+                <li><a href="hikes.php">Explore</a></li>
                 <li><a href="profile.php">Profile</a></li>
                 <?php if (isAdmin()): ?>
-                    <li><a href="admin/dashboard.php">Admin</a></li>
+                    <li><a href="<?php echo base_url('admin/dashboard.php'); ?>">Admin</a></li>
                 <?php endif; ?>
                 <li><a href="logout.php">Logout</a></li>
             </ul>

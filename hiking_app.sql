@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `bookings` (
   `id` int(11) NOT NULL,
   `hike_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `customer_name` varchar(120) NOT NULL,
   `customer_email` varchar(160) NOT NULL,
   `date` date NOT NULL,
@@ -126,6 +127,7 @@ INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `create
 ALTER TABLE `bookings`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_hike_id` (`hike_id`),
+  ADD KEY `idx_user_id` (`user_id`),
   ADD KEY `idx_customer_email` (`customer_email`),
   ADD KEY `idx_date` (`date`),
   ADD KEY `idx_status` (`status`);
@@ -194,7 +196,8 @@ ALTER TABLE `users`
 -- Constraints for table `bookings`
 --
 ALTER TABLE `bookings`
-  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`hike_id`) REFERENCES `hikes` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`hike_id`) REFERENCES `hikes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `password_history`

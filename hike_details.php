@@ -35,16 +35,16 @@ if (!$hike) {
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
+                <li><a href="hikes.php">Explore</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="profile.php">Profile</a></li>
                     <?php if (isAdmin()): ?>
-                        <li><a href="admin/dashboard.php">Admin</a></li>
+                        <li><a href="<?php echo base_url('admin/dashboard.php'); ?>">Admin</a></li>
                     <?php endif; ?>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
-                    <li><a href="login.php">Login</a></li>
-                    <li><a href="register.php">Register</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="login">Log in</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="register">Sign up</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -92,8 +92,8 @@ if (!$hike) {
                         </a>
                     <?php else: ?>
                         <p style="margin-bottom: 1rem;">Please login to book this hike</p>
-                        <a href="login.php?redirect=hike_details.php?id=<?php echo $hike['id']; ?>" class="btn btn-primary">Login to Book</a>
-                        <a href="register.php" class="btn btn-secondary">Create Account</a>
+                        <a href="#" class="btn btn-primary auth-modal-trigger" data-modal="login">Login to Book</a>
+                        <a href="#" class="btn btn-secondary auth-modal-trigger" data-modal="register">Create Account</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -108,5 +108,6 @@ if (!$hike) {
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
     </footer>
+    <?php if (!isLoggedIn()): require_once 'includes/auth_modals.php'; endif; ?>
 </body>
 </html>

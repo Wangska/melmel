@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([$user_id, $password_hash]);
                     
                     $success = true;
+                    redirect('index.php?registered=1');
                 } catch (PDOException $e) {
                     $error = 'Registration failed. Please try again.';
                 }
@@ -79,9 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
-                <li><a href="login.php">Login</a></li>
-                <li><a href="register.php">Register</a></li>
+                <li><a href="hikes.php">Explore</a></li>
+                <li><a href="login.php">Log in</a></li>
+                <li><a href="register.php">Sign up</a></li>
             </ul>
         </div>
     </nav>
@@ -93,10 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($success): ?>
                 <div class="alert alert-success">
                     <p><strong>Registration successful!</strong></p>
-                    <p>Your account has been created. You can now login.</p>
-                </div>
-                <div style="text-align: center; margin-top: 1.5rem;">
-                    <a href="login.php" class="btn btn-primary">Go to Login</a>
+                    <p>Redirecting to login...</p>
                 </div>
             <?php else: ?>
                 <?php if ($error): ?>
@@ -116,13 +114,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" required minlength="6">
+                        <div class="input-password-wrap">
+                            <input type="password" id="password" name="password" class="form-control" required minlength="6">
+                            <button type="button" class="password-toggle-btn" aria-label="Show password" title="Show password">
+                                <span class="icon-show"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+                                <span class="icon-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span>
+                            </button>
+                        </div>
                         <small style="color: var(--text-light);">Minimum 6 characters</small>
                     </div>
 
                     <div class="form-group">
                         <label for="confirm_password">Confirm Password</label>
-                        <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                        <div class="input-password-wrap">
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                            <button type="button" class="password-toggle-btn" aria-label="Show password" title="Show password">
+                                <span class="icon-show"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+                                <span class="icon-hide"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg></span>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;">Register</button>
@@ -139,5 +149,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
     </footer>
+    <script>
+    document.querySelectorAll('.password-toggle-btn').forEach(function(btn) {
+        var wrap = btn.closest('.input-password-wrap');
+        var input = wrap ? wrap.querySelector('input') : null;
+        if (!input) return;
+        btn.addEventListener('click', function() {
+            var isPass = input.type === 'password';
+            input.type = isPass ? 'text' : 'password';
+            btn.classList.toggle('showing', isPass);
+            btn.setAttribute('aria-label', isPass ? 'Hide password' : 'Show password');
+            btn.setAttribute('title', isPass ? 'Hide password' : 'Show password');
+        });
+    });
+    </script>
 </body>
 </html>

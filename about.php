@@ -19,17 +19,17 @@ require_once 'config.php';
             </a>
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
-                <li><a href="hikes.php">Hikes</a></li>
+                <li><a href="hikes.php">Explore</a></li>
                 <li><a href="about.php">About</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="profile.php">Profile</a></li>
                     <?php if (isAdmin()): ?>
-                        <li><a href="admin/dashboard.php">Admin</a></li>
+                        <li><a href="<?php echo base_url('admin/dashboard.php'); ?>">Admin</a></li>
                     <?php endif; ?>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
-                    <li><a href="login.php">Login</a></li>
-                    <li><a href="register.php">Register</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="login">Log in</a></li>
+                    <li><a href="#" class="auth-modal-trigger" data-modal="register">Sign up</a></li>
                 <?php endif; ?>
             </ul>
         </div>
@@ -144,5 +144,6 @@ require_once 'config.php';
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
         <p>Explore the beauty of Cebu's mountains safely and responsibly.</p>
     </footer>
+    <?php if (!isLoggedIn()): require_once 'includes/auth_modals.php'; endif; ?>
 </body>
 </html>
