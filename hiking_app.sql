@@ -37,6 +37,10 @@ CREATE TABLE `bookings` (
   `guests` int(11) NOT NULL,
   `total_price` int(11) NOT NULL,
   `status` varchar(20) DEFAULT 'pending',
+  `payment_method` varchar(32) DEFAULT 'pay_on_arrival',
+  `payment_status` varchar(32) DEFAULT 'unpaid',
+  `payment_source_id` varchar(64) DEFAULT NULL,
+  `payment_id` varchar(64) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -57,6 +61,22 @@ CREATE TABLE `hikes` (
   `price` int(11) NOT NULL,
   `description` text NOT NULL,
   `image_url` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `hike_ratings`
+--
+
+CREATE TABLE `hike_ratings` (
+  `id` int(11) NOT NULL,
+  `hike_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL,
+  `difficulty_rating` tinyint(1) DEFAULT NULL,
+  `duration_rating` tinyint(1) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -130,7 +150,11 @@ ALTER TABLE `bookings`
   ADD KEY `idx_user_id` (`user_id`),
   ADD KEY `idx_customer_email` (`customer_email`),
   ADD KEY `idx_date` (`date`),
-  ADD KEY `idx_status` (`status`);
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_payment_method` (`payment_method`),
+  ADD KEY `idx_payment_status` (`payment_status`),
+  ADD KEY `idx_payment_source_id` (`payment_source_id`),
+  ADD KEY `idx_payment_id` (`payment_id`);
 
 --
 -- Indexes for table `hikes`
@@ -141,6 +165,15 @@ ALTER TABLE `hikes`
   ADD KEY `idx_slug` (`slug`),
   ADD KEY `idx_location` (`location`),
   ADD KEY `idx_difficulty` (`difficulty`);
+
+--
+-- Indexes for table `hike_ratings`
+--
+ALTER TABLE `hike_ratings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_user_hike` (`hike_id`,`user_id`),
+  ADD KEY `idx_hike_ratings_hike` (`hike_id`),
+  ADD KEY `idx_hike_ratings_user` (`user_id`);
 
 --
 -- Indexes for table `password_history`
@@ -177,6 +210,12 @@ ALTER TABLE `hikes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT for table `hike_ratings`
+--
+ALTER TABLE `hike_ratings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `password_history`
 --
 ALTER TABLE `password_history`
@@ -198,6 +237,13 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`hike_id`) REFERENCES `hikes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `hike_ratings`
+--
+ALTER TABLE `hike_ratings`
+  ADD CONSTRAINT `fk_hike_ratings_hike` FOREIGN KEY (`hike_id`) REFERENCES `hikes` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_hike_ratings_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `password_history`

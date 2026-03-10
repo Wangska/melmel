@@ -1,27 +1,39 @@
 <?php
 require_once 'config.php';
 
-// Get all hikes with optional filters
+// Get all hikes with optional filters + rating summary
 $difficulty = isset($_GET['difficulty']) ? $_GET['difficulty'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-$query = "SELECT * FROM hikes WHERE 1=1";
+$query = "
+    SELECT 
+        h.*,
+        COALESCE(r.avg_rating, 0) AS avg_rating,
+        COALESCE(r.rating_count, 0) AS rating_count
+    FROM hikes h
+    LEFT JOIN (
+        SELECT hike_id, AVG(rating) AS avg_rating, COUNT(*) AS rating_count
+        FROM hike_ratings
+        GROUP BY hike_id
+    ) r ON r.hike_id = h.id
+    WHERE 1=1
+";
 $params = [];
 
 if ($difficulty) {
-    $query .= " AND difficulty = ?";
+    $query .= " AND h.difficulty = ?";
     $params[] = $difficulty;
 }
 
 if ($search) {
-    $query .= " AND (name LIKE ? OR location LIKE ? OR description LIKE ?)";
+    $query .= " AND (h.name LIKE ? OR h.location LIKE ? OR h.description LIKE ?)";
     $search_param = "%$search%";
     $params[] = $search_param;
     $params[] = $search_param;
     $params[] = $search_param;
 }
 
-$query .= " ORDER BY name ASC";
+$query .= " ORDER BY h.name ASC";
 
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
@@ -46,6 +58,7 @@ $hikes = $stmt->fetchAll();
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="hikes.php">Explore</a></li>
+                <li><a href="about.php">About</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="profile.php">Profile</a></li>
                     <?php if (isAdmin()): ?>
@@ -75,8 +88,8 @@ $hikes = $stmt->fetchAll();
         </div>
 
         <!-- Filters -->
-        <div style="background: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            <form method="GET" action="hikes.php" id="filterForm" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end;">
+        <div class="form-container" style="max-width: 100%; margin-top: 0; margin-bottom: 2rem;">
+            <form method="GET" action="hikes.php" id="filterForm" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: end; margin: 0;">
                 <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
                     <label for="search">Search</label>
                     <input type="text" id="search" name="search" class="form-control" placeholder="Search hikes..." value="<?php echo sanitize($search); ?>" autocomplete="off">
@@ -106,10 +119,34 @@ $hikes = $stmt->fetchAll();
                             <div class="hike-location">
                                 📍 <?php echo sanitize($hike['location']); ?>
                             </div>
-                            <div class="hike-meta">
-                                <span class="meta-badge difficulty-<?php echo strtolower(str_replace(' ', '-', $hike['difficulty'])); ?>">
-                                    <?php echo sanitize($hike['difficulty']); ?>
+                            <?php
+                                $avg = isset($hike['avg_rating']) ? (float) $hike['avg_rating'] : 0;
+                                $count = isset($hike['rating_count']) ? (int) $hike['rating_count'] : 0;
+                                $rounded = $avg ? round($avg * 2) / 2 : 0;
+                            ?>
+                            <div class="card-rating-row">
+                                <div class="rating-stars-sm" aria-hidden="true">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <?php
+                                            $class = '';
+                                            if ($rounded >= $i) {
+                                                $class = 'filled';
+                                            } elseif ($rounded >= $i - 0.5) {
+                                                $class = 'half';
+                                            }
+                                        ?>
+                                        <span class="rating-star <?php echo $class; ?>">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="card-rating-text">
+                                    <?php if ($count > 0): ?>
+                                        <?php echo number_format($avg, 1); ?> (<?php echo $count; ?>)
+                                    <?php else: ?>
+                                        No ratings yet
+                                    <?php endif; ?>
                                 </span>
+                            </div>
+                            <div class="hike-meta">
                                 <span class="meta-badge" style="background: #e3f2fd; color: #1976d2;">
                                     ⏱️ <?php echo $hike['duration_hours_min']; ?>-<?php echo $hike['duration_hours_max']; ?>h
                                 </span>

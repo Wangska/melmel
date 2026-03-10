@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             <ul class="nav-links">
                 <li><a href="../index.php">Home</a></li>
                 <li><a href="../hikes.php">Explore</a></li>
+                <li><a href="../about.php">About</a></li>
                 <li><a href="../profile.php">Profile</a></li>
                 <li><a href="dashboard.php">Admin</a></li>
                 <li><a href="../logout.php">Logout</a></li>
@@ -95,6 +96,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         <div class="admin-header">
             <h1>Admin Dashboard</h1>
             <p>Welcome back, <?php echo sanitize($_SESSION['username']); ?>!</p>
+        </div>
+
+        <div class="admin-actions-grid">
+            <div class="admin-action-card">
+                <div class="admin-action-top">
+                    <div class="admin-action-title">Add New Hike</div>
+                    <span class="admin-action-badge">Primary action</span>
+                </div>
+                <p class="admin-action-desc">
+                    Create a new guided hike with image, pricing, and difficulty so users can discover and book it.
+                </p>
+                <div class="admin-action-cta">
+                    <a href="add_hike.php" class="btn btn-primary">Add hike</a>
+                </div>
+            </div>
+
+            <div class="admin-action-card">
+                <div class="admin-action-top">
+                    <div class="admin-action-title">Review Bookings</div>
+                    <?php if ($stats['pending_requests'] > 0): ?>
+                        <span class="admin-action-badge"><?php echo $stats['pending_requests']; ?> pending</span>
+                    <?php endif; ?>
+                </div>
+                <p class="admin-action-desc">
+                    Approve or cancel incoming booking requests and keep track of guest counts and dates.
+                </p>
+                <div class="admin-action-cta">
+                    <a href="manage_bookings.php?status=pending" class="btn btn-primary">View pending</a>
+                </div>
+            </div>
+
+            <div class="admin-action-card">
+                <div class="admin-action-top">
+                    <div class="admin-action-title">Manage Users</div>
+                </div>
+                <p class="admin-action-desc">
+                    View registered users, adjust roles, and keep your admin area secure using RBAC.
+                </p>
+                <div class="admin-action-cta">
+                    <a href="manage_users.php" class="btn btn-primary">Manage users</a>
+                </div>
+            </div>
         </div>
 
         <!-- Statistics -->
@@ -186,10 +229,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             </table>
         </div>
 
-        <div style="margin-top: 2rem; text-align: center; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+        <div style="margin-top: 2rem; text-align: center;">
             <a href="manage_bookings.php" class="btn btn-primary">Manage All Bookings</a>
-            <a href="manage_hikes.php" class="btn btn-secondary">Manage Hikes</a>
-            <a href="manage_users.php" class="btn btn-secondary">Manage Users (RBAC)</a>
         </div>
     </div>
 

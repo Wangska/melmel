@@ -1,8 +1,21 @@
 <?php
 require_once 'config.php';
 
-// Featured hikes (first 3)
-$stmt = $pdo->query("SELECT * FROM hikes ORDER BY id ASC LIMIT 3");
+// Featured hikes (first 3) with rating summary
+$stmt = $pdo->query("
+    SELECT 
+        h.*,
+        COALESCE(r.avg_rating, 0) AS avg_rating,
+        COALESCE(r.rating_count, 0) AS rating_count
+    FROM hikes h
+    LEFT JOIN (
+        SELECT hike_id, AVG(rating) AS avg_rating, COUNT(*) AS rating_count
+        FROM hike_ratings
+        GROUP BY hike_id
+    ) r ON r.hike_id = h.id
+    ORDER BY h.id ASC
+    LIMIT 3
+");
 $featured_hikes = $stmt->fetchAll();
 
 // Counts for stats (AllTrails-style)
@@ -37,6 +50,7 @@ if (empty($difficulties)) {
             <ul class="nav-links">
                 <li><a href="index.php">Home</a></li>
                 <li><a href="hikes.php">Explore</a></li>
+                <li><a href="about.php">About</a></li>
                 <?php if (isLoggedIn()): ?>
                     <li><a href="profile.php">Profile</a></li>
                     <?php if (isAdmin()): ?>
@@ -101,10 +115,34 @@ if (empty($difficulties)) {
                         <div class="hike-content">
                             <h3 class="hike-title"><?php echo sanitize($hike['name']); ?></h3>
                             <div class="hike-location"><?php echo sanitize($hike['location']); ?></div>
-                            <div class="hike-meta">
-                                <span class="meta-badge difficulty-<?php echo strtolower(str_replace(' ', '-', $hike['difficulty'])); ?>">
-                                    <?php echo sanitize($hike['difficulty']); ?>
+                            <?php
+                                $avg = isset($hike['avg_rating']) ? (float) $hike['avg_rating'] : 0;
+                                $count = isset($hike['rating_count']) ? (int) $hike['rating_count'] : 0;
+                                $rounded = $avg ? round($avg * 2) / 2 : 0;
+                            ?>
+                            <div class="card-rating-row">
+                                <div class="rating-stars-sm" aria-hidden="true">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                        <?php
+                                            $class = '';
+                                            if ($rounded >= $i) {
+                                                $class = 'filled';
+                                            } elseif ($rounded >= $i - 0.5) {
+                                                $class = 'half';
+                                            }
+                                        ?>
+                                        <span class="rating-star <?php echo $class; ?>">★</span>
+                                    <?php endfor; ?>
+                                </div>
+                                <span class="card-rating-text">
+                                    <?php if ($count > 0): ?>
+                                        <?php echo number_format($avg, 1); ?> (<?php echo $count; ?>)
+                                    <?php else: ?>
+                                        No ratings yet
+                                    <?php endif; ?>
                                 </span>
+                            </div>
+                            <div class="hike-meta">
                                 <span class="meta-badge meta-duration"><?php echo $hike['duration_hours_min']; ?>–<?php echo $hike['duration_hours_max']; ?>h</span>
                             </div>
                             <div class="hike-footer">
@@ -117,23 +155,6 @@ if (empty($difficulties)) {
             </div>
             <div class="section-cta">
                 <a href="hikes.php" class="btn btn-primary">View all trails</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Browse by difficulty (AllTrails-style "Browse by activity") -->
-    <section class="home-section home-browse">
-        <div class="container">
-            <div class="section-title">
-                <h2>Browse by difficulty</h2>
-                <p>Find a trail that matches your pace</p>
-            </div>
-            <div class="browse-grid">
-                <?php foreach ($difficulties as $d): ?>
-                    <a href="hikes.php?difficulty=<?php echo urlencode($d); ?>" class="browse-card">
-                        <span class="browse-card-label"><?php echo sanitize($d); ?></span>
-                    </a>
-                <?php endforeach; ?>
             </div>
         </div>
     </section>
@@ -168,7 +189,6 @@ if (empty($difficulties)) {
     <!-- Footer -->
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
-        <p>Explore the beauty of Cebu's mountains safely and responsibly.</p>
     </footer>
     <?php require_once 'includes/hike_detail_modal.php'; ?>
     <?php if (!isLoggedIn()): require_once 'includes/auth_modals.php'; endif; ?>

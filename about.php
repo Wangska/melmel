@@ -6,7 +6,7 @@ require_once 'config.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - <?php echo SITE_NAME; ?></title>
+    <title>About - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -36,70 +36,93 @@ require_once 'config.php';
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero" style="padding: 5rem 2rem;">
-        <h1>About HikeBook Cebu</h1>
-        <p>Your trusted partner for hiking adventures in Cebu</p>
+    <section class="hero hero-simple">
+        <h1>About <?php echo SITE_NAME; ?></h1>
+        <p>Discover how this website helps you explore and book hikes around Cebu.</p>
     </section>
 
     <div class="container">
-        <!-- Our Story -->
-        <div style="max-width: 800px; margin: 0 auto;">
-            <div style="background: white; padding: 3rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;">
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Our Story</h2>
-                <p style="line-height: 1.8; color: var(--text-dark); margin-bottom: 1rem;">
-                    HikeBook Cebu was born from a passion for exploring the beautiful mountains and peaks of Cebu, Philippines. 
-                    We understand that discovering and booking hiking adventures can be challenging, which is why we created 
-                    a platform that makes it simple and accessible for everyone.
+        <!-- Main About card -->
+        <div style="max-width: 880px; margin: 0 auto;">
+            <div class="form-container" style="max-width: 100%; margin-top: 0; margin-bottom: 2rem;">
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">What is <?php echo SITE_NAME; ?>?</h2>
+                <p style="line-height: 1.8; color: var(--text-dark); margin-bottom: 0.75rem;">
+                    <?php echo SITE_NAME; ?> is a simple hiking companion website for Cebu. It lets you discover curated trails,
+                    see important details like difficulty, duration, and price, and book guided hikes online.
                 </p>
-                <p style="line-height: 1.8; color: var(--text-dark);">
-                    Whether you're a seasoned hiker or just starting your outdoor journey, we provide curated trails, 
-                    expert guides, and seamless booking experiences to help you explore Cebu's natural wonders safely 
-                    and responsibly.
+                <p style="line-height: 1.8; color: var(--text-dark); margin: 0;">
+                    The goal is to make planning a hike as easy as possible—from finding a trail, to reserving a slot,
+                    to managing your upcoming adventures in one place.
                 </p>
             </div>
 
-            <!-- Our Mission -->
-            <div style="background: white; padding: 3rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;">
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">Our Mission</h2>
-                <p style="line-height: 1.8; color: var(--text-dark);">
-                    To make hiking accessible, safe, and enjoyable for everyone while promoting environmental 
-                    conservation and sustainable tourism in Cebu. We believe that everyone should have the opportunity 
-                    to experience the beauty of nature and create lasting memories on the trails.
-                </p>
+            <!-- How it works -->
+            <div class="form-container" style="max-width: 100%; margin-top: 0; margin-bottom: 2rem;">
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">How the site works</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">1. Browse hikes</h3>
+                        <p style="color: var(--text-light); margin: 0;">
+                            Use the Explore page to see all available hikes, each with photos and key information.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">2. Check details & ratings</h3>
+                        <p style="color: var(--text-light); margin: 0;">
+                            Open a hike to view difficulty, duration, price, and average 5‑star ratings from other hikers.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">3. Book your spot</h3>
+                        <p style="color: var(--text-light); margin: 0;">
+                            After logging in, choose your date and group size and confirm your booking with cash or GCash.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">4. Manage everything in your profile</h3>
+                        <p style="color: var(--text-light); margin: 0;">
+                            View all your bookings, dates, and total prices from your profile page.
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <!-- What We Offer -->
-            <div style="background: white; padding: 3rem; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 2rem;">
-                <h2 style="color: var(--primary); margin-bottom: 1.5rem;">What We Offer</h2>
-                <div style="display: grid; gap: 1.5rem;">
-                    <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
-                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">📍 Curated Trails</h3>
-                        <p style="color: var(--text-light);">
-                            Handpicked hiking destinations from easy walks to challenging climbs, each with detailed 
-                            information about difficulty, duration, and what to expect.
-                        </p>
-                    </div>
-                    <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
-                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">👥 Expert Guides</h3>
-                        <p style="color: var(--text-light);">
-                            Professional and knowledgeable guides who prioritize your safety while sharing insights 
-                            about local culture, history, and ecology.
-                        </p>
-                    </div>
-                    <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
-                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">🎒 Easy Booking</h3>
-                        <p style="color: var(--text-light);">
-                            Simple, transparent booking system with instant confirmation and flexible scheduling to 
-                            fit your plans.
-                        </p>
-                    </div>
-                    <div style="border-left: 4px solid var(--primary); padding-left: 1rem;">
-                        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">🌿 Eco-Friendly</h3>
-                        <p style="color: var(--text-light);">
-                            Committed to Leave No Trace principles and supporting local communities through 
-                            responsible tourism practices.
-                        </p>
-                    </div>
+            <!-- Key features -->
+            <div class="form-container" style="max-width: 100%; margin-top: 0; margin-bottom: 2rem;">
+                <h2 style="color: var(--primary); margin-bottom: 1rem;">Key features</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>For</th>
+                                <th>Features</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Hikers</strong></td>
+                                <td>
+                                    <ul style="color: var(--text-light); line-height: 1.8; padding-left: 1.2rem; margin: 0;">
+                                        <li>Clean list of curated Cebu hikes.</li>
+                                        <li>Trail details: duration and price.</li>
+                                        <li>5‑star rating system on each hike.</li>
+                                        <li>Simple, mobile‑friendly booking flow.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Admins</strong></td>
+                                <td>
+                                    <ul style="color: var(--text-light); line-height: 1.8; padding-left: 1.2rem; margin: 0;">
+                                        <li>Dashboard with stats for hikes, bookings, users, and revenue.</li>
+                                        <li>Manage hikes and photos from a dedicated admin area.</li>
+                                        <li>Review and update booking statuses.</li>
+                                        <li>Role‑based access so only admins see admin tools.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -142,7 +165,6 @@ require_once 'config.php';
     <!-- Footer -->
     <footer class="footer">
         <p>&copy; <?php echo date('Y'); ?> <?php echo SITE_NAME; ?>. All rights reserved.</p>
-        <p>Explore the beauty of Cebu's mountains safely and responsibly.</p>
     </footer>
     <?php if (!isLoggedIn()): require_once 'includes/auth_modals.php'; endif; ?>
 </body>

@@ -70,9 +70,6 @@ if (isset($_GET['delete'])) {
                             📍 <?php echo sanitize($hike['location']); ?>
                         </div>
                         <div class="hike-meta">
-                            <span class="meta-badge difficulty-<?php echo strtolower(str_replace(' ', '-', $hike['difficulty'])); ?>">
-                                <?php echo sanitize($hike['difficulty']); ?>
-                            </span>
                             <span class="meta-badge" style="background: #e3f2fd; color: #1976d2;">
                                 ⏱️ <?php echo $hike['duration_hours_min']; ?>-<?php echo $hike['duration_hours_max']; ?>h
                             </span>
